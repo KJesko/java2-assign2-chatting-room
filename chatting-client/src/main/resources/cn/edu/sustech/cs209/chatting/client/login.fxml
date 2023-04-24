@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.GridPane?>
+
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="cn.edu.sustech.cs209.chatting.client.LoginController"
+            stylesheets="@/login.css">
+    <GridPane alignment="CENTER" hgap="10.0" vgap="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" style="-fx-background-color: white">
+        <VBox fx:id="loginBox" spacing="20.0"  visible="true" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Login" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <HBox spacing="10.0" alignment="CENTER">
+                <VBox spacing="10.0">
+                    <Label text="Username:  " styleClass="textLabel" />
+                    <Label text="Password:  " styleClass="textLabel" />
+                </VBox>
+                <VBox spacing="10.0">
+                    <TextField fx:id="usernameField" styleClass="textField"/>
+                    <PasswordField fx:id="passwordField" styleClass="textField"/>
+                </VBox>
+            </HBox>
+
+            <VBox spacing="10.0" alignment="CENTER" >
+                <Button fx:id="loginButton" text="Login" onAction="#handleLogin"
+                        style=" -fx-background-color: rgb(0,159,230); -fx-border-radius: 10px">
+
+                    <prefWidth>250</prefWidth>
+                    <prefHeight>40</prefHeight>
+                </Button>
+            </VBox>
+            <VBox spacing="10.0" alignment="CENTER_RIGHT">
+                <Button fx:id="registerButton" text="Register" onAction="#handleRegister"
+                        style="-fx-border-width: 0 0 1 0; -fx-border-color: transparent transparent black transparent; -fx-background-color: transparent;-fx-border-radius: 3px">
+                </Button>
+            </VBox>
+        </VBox>
+
+        <VBox fx:id="registerBox" spacing="20.0" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="0">
+            <Label text="Register" style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
+            <HBox spacing="10.0" alignment="CENTER">
+                <VBox spacing="10.0">
+                    <Label text="Username:  " styleClass="textLabel"/>
+                    <Label text="Password:  " styleClass="textLabel"/>
+                    <Label text="Repeat Password:  " styleClass="textLabel"/>
+                </VBox>
+                <VBox spacing="10.0">
+                    <TextField fx:id="registerUsernameField" styleClass="textField"/>
+                    <PasswordField fx:id="registerPasswordField" styleClass="textField" />
+                    <PasswordField fx:id="registerRepeatPasswordField"  styleClass="textField"/>
+                </VBox>
+            </HBox>
+            <HBox spacing="10.0" alignment="CENTER">
+                <Button fx:id="backToLoginButton" text="Back to Login" onAction="#handleBackToLogin"
+                        style="-fx-font-size: 16px; -fx-font-weight: bold;-fx-pref-width:150px; -fx-border-radius: 10px"/>
+                <Button fx:id="submitButton" text="Submit" onAction="#handleRegisterSubmit"
+                        style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-background-color: rgb(0,159,230);-fx-pref-width:150px;-fx-text-fill: white;-fx-border-radius: 10px"/>
+            </HBox>
+        </VBox>
+    </GridPane>
+</AnchorPane>

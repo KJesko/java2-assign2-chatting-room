@@ -5,7 +5,6 @@ package cn.edu.sustech.cs209.chatting.common;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    //0 客户端向服务端发测试，1 服务端向客户端回应测试，2 客户端向服务端发聊天消息，3，服务器转发消息
     private int type;
     private Long timestamp;
 
@@ -19,6 +18,10 @@ public class Message implements Serializable {
 
     private String data;
 
+    private String belongToChat;
+
+    private String belongToUser;
+
     public Message(int type, Long timestamp, String sentByUser, String sendToUser, String sentByUrl, String sendToUrl, String data) {
         this.type = type;
         this.timestamp = timestamp;
@@ -30,7 +33,7 @@ public class Message implements Serializable {
     }
 
     public Message(Message message) {
-        this.type = 3;
+        this.type = 0;
         this.timestamp = message.timestamp;
         this.sentByUser = message.sentByUser;
         this.sendToUser = message.sendToUser;
@@ -38,6 +41,7 @@ public class Message implements Serializable {
         this.sentByUrl = message.sendToUrl;
         this.sendToUrl = "unknown";
         this.data = message.data;
+
     }
 
     public Message() {
@@ -101,5 +105,33 @@ public class Message implements Serializable {
         return data;
     }
 
+    public String getBelongToChat() {
+        return belongToChat;
+    }
 
+    public void setBelongToChat(String belongToChat) {
+        this.belongToChat = belongToChat;
+    }
+
+    public String getBelongToUser() {
+        return belongToUser;
+    }
+
+    public void setBelongToUser(String belongToUser) {
+        this.belongToUser = belongToUser;
+    }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "type=" + type +
+                ", timestamp=" + timestamp +
+                ", sentByUser='" + sentByUser + '\'' +
+                ", sendToUser='" + sendToUser + '\'' +
+                ", sentByUrl='" + sentByUrl + '\'' +
+                ", sendToUrl='" + sendToUrl + '\'' +
+                ", data='" + data + '\'' +
+                ", belongToChat='" + belongToChat + '\'' +
+                '}';
+    }
 }

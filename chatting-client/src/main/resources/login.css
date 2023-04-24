@@ -1,0 +1,23 @@
+.textField {
+    -fx-pref-width: 200px;
+    -fx-pref-height: 40px;
+    -fx-border-style: none;
+    -fx-border-radius: 0;
+    -fx-alignment: bottom-left;
+    -fx-font-size: 16px;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: transparent transparent gray transparent;
+    -fx-focus-color: rgb(0, 159, 230);
+    -fx-faint-focus-color: rgb(0, 159, 230);
+    -fx-text-box-border: transparent;
+
+    -fx-background-color: #fff, #fff;
+    -fx-control-inner-background: #fff;
+    -fx-text-fill: black;
+}
+
+.textLabel {
+    -fx-font-size: 16px;
+    -fx-pref-height: 40px;
+    -fx-alignment: bottom-center;
+}
