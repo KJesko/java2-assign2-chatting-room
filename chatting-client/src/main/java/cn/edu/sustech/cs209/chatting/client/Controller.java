@@ -1067,7 +1067,7 @@ public class Controller implements Initializable {
                 receiveChatIndex = items.indexOf(message.getBelongToChat());
                 items.remove(message.getBelongToChat());
               }
-              System.out.println("currentChatIndex:" + currentChatIndex + "receiveChatIndex:" + receiveChatIndex);
+//              System.out.println("currentChatIndex:" + currentChatIndex + "receiveChatIndex:" + receiveChatIndex);
 
               items.add(0, message.getBelongToChat());
               if (currentChatIndex < receiveChatIndex) {

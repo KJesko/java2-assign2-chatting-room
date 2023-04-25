@@ -144,6 +144,8 @@ public class Message implements Serializable {
             ", sendToUrl='" + sendToUrl + '\'' +
             ", data='" + data + '\'' +
             ", belongToChat='" + belongToChat + '\'' +
+            ", belongToUser='" + belongToUser + '\'' +
+            ", haveRead=" + haveRead +
             '}';
   }
 }

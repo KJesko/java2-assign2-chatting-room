@@ -190,21 +190,21 @@ class ClientThread extends Thread {
               s = s.substring(1, s.length() - 1).replace(", ", ",");
               transferMessage.setBelongToChat(s);
               transferMessage.setSendToUser(targetUser);
+              transferMessage.setBelongToUser(targetUser);
               if (this.mainServer.clientPoor.get(targetUser) != null) {
                 this.mainServer.clientPoor.get(targetUser).out.writeObject(transferMessage);
               }
-              transferMessage.setBelongToUser(targetUser);
               this.mainServer.HistoryMessage.add(transferMessage);
             }
           }
 
         } else if (message.getType() == 0) { //用户发给用户的文字消息，服务器负责转发
           System.out.println(Thread.currentThread().getName() + " | 服务端收到客户端发给" + message.getSendToUser() + "的信息：" + message.getData());
-          Message transferMessage = new Message(message);
           this.mainServer.HistoryMessage.add(message);
-          transferMessage.setHaveRead(false);
 //                    transferMessage.setSendToUrl(this.mainServer.clientPoor.get(message.getSendToUser()).socket.getLocalAddress().toString());
           if (!message.getSendToUser().contains(",")) {//发给单人用户，只要转发一个人
+            Message transferMessage = new Message(message);
+
             transferMessage.setBelongToChat(message.getSentByUser());
             transferMessage.setBelongToUser(message.getSendToUser());
             if (this.mainServer.clientPoor.get(message.getSendToUser()) != null) {
@@ -216,6 +216,7 @@ class ClientThread extends Thread {
             System.out.println("sendToUserArr:" + Arrays.toString(sendToUserArr));
 
             for (String targetUser : sendToUserArr) {
+              Message transferMessage = new Message(message);
               List<String> list = Arrays.stream(sendToUserArr).collect(Collectors.toList());
               list.remove(targetUser);
               list.add(message.getSentByUser());
@@ -224,10 +225,12 @@ class ClientThread extends Thread {
               s = s.substring(1, s.length() - 1).replace(", ", ",");
               transferMessage.setBelongToChat(s);
               transferMessage.setSendToUser(targetUser);
+              transferMessage.setBelongToUser(targetUser);
               if (this.mainServer.clientPoor.get(targetUser) != null) {
                 this.mainServer.clientPoor.get(targetUser).out.writeObject(transferMessage);
+                System.out.println("转发" + transferMessage);
               }
-              transferMessage.setBelongToUser(targetUser);
+
               this.mainServer.HistoryMessage.add(transferMessage);
             }
           }
@@ -358,8 +361,9 @@ class MyServerSocket extends Thread {
       fis.close();
 //            System.out.println( + filename);
       System.out.println("HistoryMessage has been read from file.");
+      this.HistoryMessage.forEach(System.out::println);
     } catch (IOException | ClassNotFoundException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
       this.HistoryMessage = new ArrayList<>();
 
     }
