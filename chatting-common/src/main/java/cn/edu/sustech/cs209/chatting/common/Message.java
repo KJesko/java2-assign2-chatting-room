@@ -22,6 +22,8 @@ public class Message implements Serializable {
 
     private String belongToUser;
 
+    private String haveRead;
+
     public Message(int type, Long timestamp, String sentByUser, String sendToUser, String sentByUrl, String sendToUrl, String data) {
         this.type = type;
         this.timestamp = timestamp;

@@ -90,6 +90,7 @@ public class Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+
         try {
             client = new Socket("localhost", 9090);
             System.out.println(client.getLocalSocketAddress());
@@ -97,6 +98,22 @@ public class Controller implements Initializable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+//        Thread shutdownHook = new Thread(() -> {
+//            Message message = new Message();
+//            message.setType(4);
+//            message.setSentByUser(username);
+//            message.setData("Abnormal exit");
+//            System.out.println("Abnormal exit");
+//            try {
+//                out.writeObject(message);
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//        });
+//        Runtime.getRuntime().addShutdownHook(shutdownHook);
+
+
         Thread clientListener = null;
         try {
             clientListener = new Thread(new clientSocket(client, userSet));
@@ -114,7 +131,6 @@ public class Controller implements Initializable {
 
             loginStage.setScene(new Scene(root, 400, 300));
             loginStage.setOnCloseRequest(event -> {
-//                stage = (Stage)  chatList.getScene().getWindow();
                 stage.close();
                 Platform.exit();
                 System.exit(0);
@@ -170,30 +186,32 @@ public class Controller implements Initializable {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (mouseEvent.getClickCount() == 2) {
-                    String messageData = chatContentList.getSelectionModel().getSelectedItem().getData();
-                    String fileId = messageData.substring(0,messageData.indexOf(":"));
-                    String oldName = messageData.substring(messageData.indexOf(":")+1);
-                    Path selectedFilePath = Paths.get( "file/"+fileId);
-                    Path newPath = Paths.get("C:\\Users\\HUAWEI\\Desktop\\chatting-download\\"+oldName);
+                    if (chatContentList.getSelectionModel().getSelectedItem().getType()==6){
+                        String messageData = chatContentList.getSelectionModel().getSelectedItem().getData();
+                        String fileId = messageData.substring(0,messageData.indexOf(":"));
+                        String oldName = messageData.substring(messageData.indexOf(":")+1);
+                        Path selectedFilePath = Paths.get( "file/"+fileId);
+                        Path newPath = Paths.get("C:\\Users\\HUAWEI\\Desktop\\chatting-download\\"+oldName);
 
-                    try {
-                        Files.copy(selectedFilePath, newPath, StandardCopyOption.REPLACE_EXISTING);
-                        Stage stage = new Stage();
-                        HBox box = new HBox(50);
-                        box.setAlignment(Pos.CENTER);
-                        box.setPadding(new Insets(20, 20, 20, 20));
-                        Label label = new Label("文件下载完成！请到此路径下查看：\n"+newPath.toString());
-                        box.getChildren().addAll(label);
-                        stage.setScene(new Scene(box,350,130));
-                        stage.initModality(Modality.APPLICATION_MODAL);
-                        stage.setTitle("提示");
-                        stage.showAndWait();
-                        System.exit(0);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        try {
+                            Files.copy(selectedFilePath, newPath, StandardCopyOption.REPLACE_EXISTING);
+                            Stage stage = new Stage();
+                            HBox box = new HBox(50);
+                            box.setAlignment(Pos.CENTER);
+                            box.setPadding(new Insets(20, 20, 20, 20));
+                            Label label = new Label("文件下载完成！请到此路径下查看：\n"+newPath.toString());
+                            box.getChildren().addAll(label);
+                            stage.setScene(new Scene(box,350,130));
+                            stage.initModality(Modality.APPLICATION_MODAL);
+                            stage.setTitle("提示");
+                            stage.showAndWait();
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
+
                     }
-
                 }
+
             }
         });
 
@@ -325,9 +343,13 @@ public class Controller implements Initializable {
             message.setData("disconnect");
             try {
                 out.writeObject(message);
+                if (client!=null){
+                    client.close();
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+
 
             stage.close();
             Platform.exit();
@@ -509,13 +531,11 @@ public class Controller implements Initializable {
                 System.out.println("filterMessageItems.size():" + filterMessageItems.size());
                 chatContentList.setItems(filterMessageItems);
                 ObservableList<String> chatListItems = chatList.getItems();
-                System.out.println("aaaaaaa"+ chatListItems);
                 String tempCurrentChat = currentChat;
                 chatListItems.remove(currentChat);
                 chatListItems.add(0,tempCurrentChat);
                 chatList.setItems(chatListItems);
                 currentChat = tempCurrentChat;
-                System.out.println("bbbbbbb"+ chatListItems);
                 chatList.getSelectionModel().selectFirst();
                 chatContentList.getSelectionModel().selectLast();
             }
@@ -552,7 +572,6 @@ public class Controller implements Initializable {
             message.setType(6);
             message.setData(fileId+":"+oldName);
 
-
             synchronized (this.messageItems) {
                 messageItems.add(message);
                 System.out.println("messageItems.size():" + messageItems.size());
@@ -561,13 +580,11 @@ public class Controller implements Initializable {
                 System.out.println("filterMessageItems.size():" + filterMessageItems.size());
                 chatContentList.setItems(filterMessageItems);
                 ObservableList<String> chatListItems = chatList.getItems();
-                System.out.println("aaaaaaa"+ chatListItems);
                 String tempCurrentChat = currentChat;
                 chatListItems.remove(currentChat);
                 chatListItems.add(0,tempCurrentChat);
                 chatList.setItems(chatListItems);
                 currentChat = tempCurrentChat;
-                System.out.println("bbbbbbb"+ chatListItems);
                 chatList.getSelectionModel().selectFirst();
                 chatContentList.getSelectionModel().selectLast();
             }
@@ -732,11 +749,12 @@ public class Controller implements Initializable {
                 VBox vbox2 = new VBox();
                 HBox hBoxCircle = new HBox(region, stackPane);
                 hBoxCircle.setPadding(new Insets(5, 0, 0, 0));
-                vbox2.getChildren().addAll(timeText, hBoxCircle);
+//                vbox2.getChildren().addAll(timeText, hBoxCircle);
+                vbox2.getChildren().addAll(timeText);
                 vbox2.setMaxWidth(Double.MAX_VALUE);
                 HBox.setHgrow(vbox2, Priority.ALWAYS);
 
-                vbox2.setAlignment(Pos.BOTTOM_RIGHT);
+                vbox2.setAlignment(Pos.TOP_RIGHT);
 
 
                 HBox hboxLeft = new HBox();
@@ -904,6 +922,7 @@ public class Controller implements Initializable {
         }
 
         public void run() {
+
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     Message message = (Message) in.readObject();

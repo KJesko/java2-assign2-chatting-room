@@ -5,6 +5,7 @@ import cn.edu.sustech.cs209.chatting.common.Message;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -143,9 +144,16 @@ class ClientThread extends Thread{
                     System.out.println(Thread.currentThread().getName()+" | 服务端收到客户端refresh的信息：" + message.getData());
                 }
                 else if (message.getType() == 4) {//退出
+                    System.out.println(Thread.currentThread().getName()+" | 服务端收到客户端退出的信息：" + message.getData());
+
                     Thread.currentThread().interrupt();
                     synchronized (this.mainServer.clientPoor){
-                        this.mainServer.clientPoor.remove(message.getSentByUser());
+                        if (message.getSentByUser()==null){
+                            this.mainServer.clientPoor.remove(Thread.currentThread().getName());
+                        }else {
+                            this.mainServer.clientPoor.remove(message.getSentByUser());
+                        }
+
                     }
 
                     Message returnMessage = new Message();
@@ -167,7 +175,9 @@ class ClientThread extends Thread{
                     if (!message.getSendToUser().contains(",")){//发给单人用户，只要转发一个人
                         transferMessage.setBelongToChat(message.getSentByUser());
                         transferMessage.setBelongToUser(message.getSendToUser());
-                        this.mainServer.clientPoor.get(message.getSendToUser()).out.writeObject(transferMessage);
+                        if (this.mainServer.clientPoor.get(message.getSendToUser()) != null){
+                            this.mainServer.clientPoor.get(message.getSendToUser()).out.writeObject(transferMessage);
+                        }
                         this.mainServer.HistoryMessage.add(transferMessage);
                     }else {//群聊消息，转发给多个人
                         String[] sendToUserArr = message.getSendToUser().split(",");
@@ -182,7 +192,9 @@ class ClientThread extends Thread{
                             s = s.substring(1,s.length()-1).replace(", ",",");
                             transferMessage.setBelongToChat(s);
                             transferMessage.setSendToUser(targetUser);
-                            this.mainServer.clientPoor.get(targetUser).out.writeObject(transferMessage);
+                            if (this.mainServer.clientPoor.get(targetUser) != null){
+                                this.mainServer.clientPoor.get(targetUser).out.writeObject(transferMessage);
+                            }
                             transferMessage.setBelongToUser(targetUser);
                             this.mainServer.HistoryMessage.add(transferMessage);
                         }
@@ -197,7 +209,9 @@ class ClientThread extends Thread{
                     if (!message.getSendToUser().contains(",")){//发给单人用户，只要转发一个人
                         transferMessage.setBelongToChat(message.getSentByUser());
                         transferMessage.setBelongToUser(message.getSendToUser());
-                        this.mainServer.clientPoor.get(message.getSendToUser()).out.writeObject(transferMessage);
+                        if (this.mainServer.clientPoor.get(message.getSendToUser()) != null){
+                            this.mainServer.clientPoor.get(message.getSendToUser()).out.writeObject(transferMessage);
+                        }
                         this.mainServer.HistoryMessage.add(transferMessage);
                     }else {//群聊消息，转发给多个人
                         String[] sendToUserArr = message.getSendToUser().split(",");
@@ -212,7 +226,9 @@ class ClientThread extends Thread{
                             s = s.substring(1,s.length()-1).replace(", ",",");
                             transferMessage.setBelongToChat(s);
                             transferMessage.setSendToUser(targetUser);
-                            this.mainServer.clientPoor.get(targetUser).out.writeObject(transferMessage);
+                            if (this.mainServer.clientPoor.get(targetUser) != null){
+                                this.mainServer.clientPoor.get(targetUser).out.writeObject(transferMessage);
+                            }
                             transferMessage.setBelongToUser(targetUser);
                             this.mainServer.HistoryMessage.add(transferMessage);
                         }
@@ -221,7 +237,10 @@ class ClientThread extends Thread{
                 }
 //                System.out.println(Thread.currentThread().getName()+" | 服务端收到客户端发给"+ message.getSendToUser() +"的信息：" + message.getData());
 
-            } catch (EOFException e){
+            }catch(SocketException e){
+                this.mainServer.clientPoor.remove(Thread.currentThread().getName());
+            }
+            catch (EOFException e){
                 System.out.println("EOF e");
             } catch (IOException | ClassNotFoundException e ) {
                 e.printStackTrace();
