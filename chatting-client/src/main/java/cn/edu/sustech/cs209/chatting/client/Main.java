@@ -11,30 +11,29 @@ import java.io.IOException;
 
 public class Main extends Application {
 
-    public static void main(String[] args) {
-        launch();
-    }
+  public static void main(String[] args) {
+    launch();
+  }
 
-    @Override
-    public void start(Stage stage) throws IOException {
-
-
-        FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("main.fxml"));
-
-        mainLoader.setControllerFactory(param -> {
-            Controller controller = new Controller();
-            controller.stage =stage;
-            return controller;
-        });
-        Parent mainRoot = mainLoader.load();
-        Scene mainScene = new Scene(mainRoot,1000,600);
-        stage.setScene(mainScene);
+  @Override
+  public void start(Stage stage) throws IOException {
 
 
+    FXMLLoader mainLoader = new FXMLLoader(getClass().getResource("main.fxml"));
 
-        stage.setTitle("Chatting Client");
-        stage.setResizable(false);
+    mainLoader.setControllerFactory(param -> {
+      Controller controller = new Controller();
+      controller.stage = stage;
+      return controller;
+    });
+    Parent mainRoot = mainLoader.load();
+    Scene mainScene = new Scene(mainRoot, 1000, 600);
+    stage.setScene(mainScene);
 
 
-    }
+    stage.setTitle("Chatting Client");
+    stage.setResizable(false);
+
+
+  }
 }

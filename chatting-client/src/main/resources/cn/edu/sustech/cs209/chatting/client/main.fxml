@@ -27,15 +27,16 @@
 <VBox prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="cn.edu.sustech.cs209.chatting.client.Controller">
 
-<!--    <MenuBar VBox.vgrow="NEVER">-->
-<!--        <Menu mnemonicParsing="false" text="Chat">-->
-<!--            <MenuItem mnemonicParsing="false" onAction="#createPrivateChat" text="New Private Chat"/>-->
-<!--            <MenuItem mnemonicParsing="false" onAction="#createGroupChat" text="New Group Chat"/>-->
-<!--        </Menu>-->
-<!--    </MenuBar>-->
+    <!--    <MenuBar VBox.vgrow="NEVER">-->
+    <!--        <Menu mnemonicParsing="false" text="Chat">-->
+    <!--            <MenuItem mnemonicParsing="false" onAction="#createPrivateChat" text="New Private Chat"/>-->
+    <!--            <MenuItem mnemonicParsing="false" onAction="#createGroupChat" text="New Group Chat"/>-->
+    <!--        </Menu>-->
+    <!--    </MenuBar>-->
     <SplitPane dividerPositions="0.25,0.85" focusTraversable="true" VBox.vgrow="ALWAYS">
         <VBox>
-            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="10.0" style="-fx-background-color: rgba(0,159,230);-fx-padding: 10 0 10 5;">
+            <HBox alignment="CENTER_LEFT" prefHeight="60.0" prefWidth="200.0" spacing="10.0"
+                  style="-fx-background-color: rgba(0,159,230);-fx-padding: 10 0 10 5;">
                 <children>
                     <HBox alignment="CENTER_LEFT" spacing="10.0">
                         <ImageView fx:id="userHeadImg" fitHeight="50.0" fitWidth="50.0" layoutX="5.0" layoutY="5.0"
@@ -57,7 +58,8 @@
                         <Region VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
                         <VBox spacing="10.0" alignment="BOTTOM_RIGHT" style="-fx-padding: 0 0 0 10">
 
-                            <Button fx:id="createPrivateChatButton" style="-fx-background-color: transparent" onAction="#createPrivateChat" alignment="CENTER_RIGHT">
+                            <Button fx:id="createPrivateChatButton" style="-fx-background-color: transparent"
+                                    onAction="#createPrivateChat" alignment="CENTER_RIGHT">
                                 <graphic>
                                     <ImageView fitHeight="20.0" fitWidth="20.0">
                                         <Image url="@/PrivateChat.png"/>
@@ -67,16 +69,17 @@
                                     <Tooltip fx:id="createPrivateChatTooltip" text="Create private chat"/>
                                 </tooltip>
                             </Button>
-                            <Button fx:id="createGroupChatButton" style="-fx-background-color: transparent" onAction="#createGroupChat" alignment="CENTER_RIGHT">
-                            <graphic>
-                                <ImageView fitHeight="20.0" fitWidth="20.0">
-                                    <Image url="@/GroupChat.png"/>
-                                </ImageView>
-                            </graphic>
-                            <tooltip>
-                                <Tooltip fx:id="createGroupChatTooltip" text="Create group chat"/>
-                            </tooltip>
-                        </Button>
+                            <Button fx:id="createGroupChatButton" style="-fx-background-color: transparent"
+                                    onAction="#createGroupChat" alignment="CENTER_RIGHT">
+                                <graphic>
+                                    <ImageView fitHeight="20.0" fitWidth="20.0">
+                                        <Image url="@/GroupChat.png"/>
+                                    </ImageView>
+                                </graphic>
+                                <tooltip>
+                                    <Tooltip fx:id="createGroupChatTooltip" text="Create group chat"/>
+                                </tooltip>
+                            </Button>
                         </VBox>
                     </HBox>
 

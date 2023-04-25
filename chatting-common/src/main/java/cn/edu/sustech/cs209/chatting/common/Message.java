@@ -5,135 +5,145 @@ package cn.edu.sustech.cs209.chatting.common;
 import java.io.Serializable;
 
 public class Message implements Serializable {
-    private int type;
-    private Long timestamp;
+  private int type;
+  private Long timestamp;
 
-    private String sentByUser;
+  private String sentByUser;
 
-    private String sendToUser;
+  private String sendToUser;
 
-    private String sentByUrl;
+  private String sentByUrl;
 
-    private String sendToUrl;
+  private String sendToUrl;
 
-    private String data;
+  private String data;
 
-    private String belongToChat;
+  private String belongToChat;
 
-    private String belongToUser;
+  private String belongToUser;
 
-    private String haveRead;
+  private boolean haveRead;
 
-    public Message(int type, Long timestamp, String sentByUser, String sendToUser, String sentByUrl, String sendToUrl, String data) {
-        this.type = type;
-        this.timestamp = timestamp;
-        this.sentByUser = sentByUser;
-        this.sendToUser = sendToUser;
-        this.sentByUrl = sentByUrl;
-        this.sendToUrl = sendToUrl;
-        this.data = data;
-    }
+  public Message(int type, Long timestamp, String sentByUser, String sendToUser, String sentByUrl, String sendToUrl, String data) {
+    this.type = type;
+    this.timestamp = timestamp;
+    this.sentByUser = sentByUser;
+    this.sendToUser = sendToUser;
+    this.sentByUrl = sentByUrl;
+    this.sendToUrl = sendToUrl;
+    this.data = data;
+    this.haveRead = false;
+  }
 
-    public Message(Message message) {
-        this.type = 0;
-        this.timestamp = message.timestamp;
-        this.sentByUser = message.sentByUser;
-        this.sendToUser = message.sendToUser;
-        //转发过来的消息的目的地址message.sendToUrl为服务器，转发出去的发送地址sentByUrl也是服务器地址
-        this.sentByUrl = message.sendToUrl;
-        this.sendToUrl = "unknown";
-        this.data = message.data;
-
-    }
-
-    public Message() {
-
-    }
+  public Message(Message message) {
+    this.type = 0;
+    this.timestamp = message.timestamp;
+    this.sentByUser = message.sentByUser;
+    this.sendToUser = message.sendToUser;
+    //转发过来的消息的目的地址message.sendToUrl为服务器，转发出去的发送地址sentByUrl也是服务器地址
+    this.sentByUrl = message.sendToUrl;
+    this.sendToUrl = "unknown";
+    this.data = message.data;
+    this.haveRead = false;
+  }
 
 
-    public int getType() {
-        return type;
-    }
+  public Message() {
+    this.haveRead = false;
+  }
 
-    public void setType(int type) {
-        this.type = type;
-    }
 
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
+  public int getType() {
+    return type;
+  }
 
-    public void setSentByUser(String sentByUser) {
-        this.sentByUser = sentByUser;
-    }
+  public void setType(int type) {
+    this.type = type;
+  }
 
-    public void setSendToUser(String sendToUser) {
-        this.sendToUser = sendToUser;
-    }
+  public void setTimestamp(Long timestamp) {
+    this.timestamp = timestamp;
+  }
 
-    public void setSentByUrl(String sentByUrl) {
-        this.sentByUrl = sentByUrl;
-    }
+  public void setSentByUser(String sentByUser) {
+    this.sentByUser = sentByUser;
+  }
 
-    public void setSendToUrl(String sendToUrl) {
-        this.sendToUrl = sendToUrl;
-    }
+  public void setSendToUser(String sendToUser) {
+    this.sendToUser = sendToUser;
+  }
 
-    public void setData(String data) {
-        this.data = data;
-    }
+  public void setSentByUrl(String sentByUrl) {
+    this.sentByUrl = sentByUrl;
+  }
 
-    public Long getTimestamp() {
-        return timestamp;
-    }
+  public void setSendToUrl(String sendToUrl) {
+    this.sendToUrl = sendToUrl;
+  }
 
-    public String getSentByUser() {
-        return sentByUser;
-    }
+  public void setData(String data) {
+    this.data = data;
+  }
 
-    public String getSendToUser() {
-        return sendToUser;
-    }
+  public Long getTimestamp() {
+    return timestamp;
+  }
 
-    public String getSentByUrl() {
-        return sentByUrl;
-    }
+  public String getSentByUser() {
+    return sentByUser;
+  }
 
-    public String getSendToUrl() {
-        return sendToUrl;
-    }
+  public String getSendToUser() {
+    return sendToUser;
+  }
 
-    public String getData() {
-        return data;
-    }
+  public String getSentByUrl() {
+    return sentByUrl;
+  }
 
-    public String getBelongToChat() {
-        return belongToChat;
-    }
+  public String getSendToUrl() {
+    return sendToUrl;
+  }
 
-    public void setBelongToChat(String belongToChat) {
-        this.belongToChat = belongToChat;
-    }
+  public String getData() {
+    return data;
+  }
 
-    public String getBelongToUser() {
-        return belongToUser;
-    }
+  public String getBelongToChat() {
+    return belongToChat;
+  }
 
-    public void setBelongToUser(String belongToUser) {
-        this.belongToUser = belongToUser;
-    }
+  public void setBelongToChat(String belongToChat) {
+    this.belongToChat = belongToChat;
+  }
 
-    @Override
-    public String toString() {
-        return "Message{" +
-                "type=" + type +
-                ", timestamp=" + timestamp +
-                ", sentByUser='" + sentByUser + '\'' +
-                ", sendToUser='" + sendToUser + '\'' +
-                ", sentByUrl='" + sentByUrl + '\'' +
-                ", sendToUrl='" + sendToUrl + '\'' +
-                ", data='" + data + '\'' +
-                ", belongToChat='" + belongToChat + '\'' +
-                '}';
-    }
+  public String getBelongToUser() {
+    return belongToUser;
+  }
+
+  public void setBelongToUser(String belongToUser) {
+    this.belongToUser = belongToUser;
+  }
+
+  public boolean isHaveRead() {
+    return haveRead;
+  }
+
+  public void setHaveRead(boolean haveRead) {
+    this.haveRead = haveRead;
+  }
+
+  @Override
+  public String toString() {
+    return "Message{" +
+            "type=" + type +
+            ", timestamp=" + timestamp +
+            ", sentByUser='" + sentByUser + '\'' +
+            ", sendToUser='" + sendToUser + '\'' +
+            ", sentByUrl='" + sentByUrl + '\'' +
+            ", sendToUrl='" + sendToUrl + '\'' +
+            ", data='" + data + '\'' +
+            ", belongToChat='" + belongToChat + '\'' +
+            '}';
+  }
 }

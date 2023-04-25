@@ -155,16 +155,74 @@ public class Controller implements Initializable {
             (ObservableValue<? extends String> observable, String oldValue, String newValue) -> {
               currentChat = newValue;
               ObservableList<Message> filterMessageItems = FXCollections.observableArrayList(messageItems.stream().filter(e -> e.getBelongToChat().equals(this.currentChat)).collect(Collectors.toList()));
+              if (filterMessageItems.size() != 0) {
+                Message latestMessage = filterMessageItems.get(filterMessageItems.size() - 1);
+                latestMessage.setHaveRead(true);
+                Message confirmMessage = new Message();
+                confirmMessage.setType(7);
+                confirmMessage.setSentByUser(username);
+                confirmMessage.setBelongToUser(username);
+                confirmMessage.setBelongToChat(currentChat);
+                confirmMessage.setData("confirm read");
+                confirmMessage.setTimestamp(System.currentTimeMillis());
+                try {
+                  out.writeObject(confirmMessage);
+                } catch (IOException e) {
+                  throw new RuntimeException(e);
+                }
+              }
               chatContentList.setItems(filterMessageItems);
+              chatContentList.scrollTo(chatContentList.getItems().size() - 1);
               chatList.refresh();
-//                    messageItems.forEach((e) -> System.out.println(e.getData()));
-//                    System.out.println(currentChat);
             });
+    chatList.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent mouseEvent) {
+        if (mouseEvent.getClickCount() == 1) {
+          int index = chatList.getSelectionModel().getSelectedIndex();
+          chatList.getSelectionModel().select(index);
+        }
 
+      }
+    });
     chatList.setBackground(Background.EMPTY);
     chatList.setFocusTraversable(false);
     chatList.setMouseTransparent(false);
-    chatList.setCellFactory(param -> new ChatCellFactory());
+    chatList.setCellFactory(param -> {
+      ListCell<String> cell = new ChatCellFactory();
+      cell.setOnMouseClicked(event -> {
+        if (event.getClickCount() == 1) {
+          if (cell.getItem() != null) {
+            if (cell.getIndex() == chatList.getSelectionModel().getSelectedIndex()) {
+
+              ObservableList<Message> filterMessageItems = FXCollections.observableArrayList(messageItems.stream().filter(e -> e.getBelongToChat().equals(this.currentChat)).collect(Collectors.toList()));
+              if (filterMessageItems.size() != 0) {
+                Message latestMessage = filterMessageItems.get(filterMessageItems.size() - 1);
+                latestMessage.setHaveRead(true);
+                Message confirmMessage = new Message();
+                confirmMessage.setType(7);
+                confirmMessage.setSentByUser(username);
+                confirmMessage.setBelongToUser(username);
+                confirmMessage.setBelongToChat(currentChat);
+                confirmMessage.setData("confirm read");
+                confirmMessage.setTimestamp(System.currentTimeMillis());
+                try {
+                  out.writeObject(confirmMessage);
+                } catch (IOException e) {
+                  throw new RuntimeException(e);
+                }
+              }
+              chatContentList.setItems(filterMessageItems);
+              chatContentList.scrollTo(chatContentList.getItems().size() - 1);
+
+              chatList.refresh();
+              System.out.println("Selected item clicked!");
+            }
+          }
+        }
+      });
+      return cell;
+    });
     chatList.setPadding(new Insets(5));
     chatList.setStyle("-fx-border-width: 0px; -fx-background-color: transparent;-fx-control-inner-background: transparent;");
 //        chatList.addEventFilter(MouseEvent.MOUSE_PRESSED, Event::consume);
@@ -523,6 +581,8 @@ public class Controller implements Initializable {
       Message message = new Message(0, timestamp, sentByUser, sentToUser, sentByUrl, sentToUrl, data);
       message.setBelongToUser(sentByUser);
       message.setBelongToChat(sentToUser);
+      message.setHaveRead(true);
+
       synchronized (this.messageItems) {
         messageItems.add(message);
         System.out.println("messageItems.size():" + messageItems.size());
@@ -537,8 +597,11 @@ public class Controller implements Initializable {
         chatList.setItems(chatListItems);
         currentChat = tempCurrentChat;
         chatList.getSelectionModel().selectFirst();
-        chatContentList.getSelectionModel().selectLast();
+//        chatContentList.getSelectionModel().selectLast();
+        chatContentList.scrollTo(chatContentList.getItems().size() - 1);
+
       }
+
 
       out.writeObject(message);
     } catch (IOException e) {
@@ -571,6 +634,7 @@ public class Controller implements Initializable {
       message.setSendToUser(currentChat);
       message.setType(6);
       message.setData(fileId + ":" + oldName);
+      message.setHaveRead(true);
 
       synchronized (this.messageItems) {
         messageItems.add(message);
@@ -587,6 +651,8 @@ public class Controller implements Initializable {
         currentChat = tempCurrentChat;
         chatList.getSelectionModel().selectFirst();
         chatContentList.getSelectionModel().selectLast();
+        chatContentList.scrollTo(chatContentList.getItems().size() - 1);
+
       }
 
 
@@ -724,7 +790,14 @@ public class Controller implements Initializable {
 
         StackPane stackPane = new StackPane();
         Text countText = new Text("10");
-        int count = 3;
+        int count = 0;
+        for (Message message : messages) {
+          if (!message.isHaveRead()) {
+            count++;
+          } else {
+            count = 0;
+          }
+        }
         if (count == 0) {
           stackPane.setVisible(false);
         } else {
@@ -747,8 +820,8 @@ public class Controller implements Initializable {
         VBox vbox2 = new VBox();
         HBox hBoxCircle = new HBox(region, stackPane);
         hBoxCircle.setPadding(new Insets(5, 0, 0, 0));
-//                vbox2.getChildren().addAll(timeText, hBoxCircle);
-        vbox2.getChildren().addAll(timeText);
+        vbox2.getChildren().addAll(timeText, hBoxCircle);
+//                vbox2.getChildren().addAll(timeText);
         vbox2.setMaxWidth(Double.MAX_VALUE);
         HBox.setHgrow(vbox2, Priority.ALWAYS);
 
@@ -988,10 +1061,20 @@ public class Controller implements Initializable {
 
             Platform.runLater(() -> {
               ObservableList<String> items = Controller.this.chatList.getItems();
+              int currentChatIndex = items.indexOf(currentChat);
+              int receiveChatIndex = Integer.MAX_VALUE;
               if (Controller.this.chatList.getItems().contains(message.getBelongToChat())) {//新发来的消息放在listview最前面
+                receiveChatIndex = items.indexOf(message.getBelongToChat());
                 items.remove(message.getBelongToChat());
               }
+              System.out.println("currentChatIndex:" + currentChatIndex + "receiveChatIndex:" + receiveChatIndex);
+
               items.add(0, message.getBelongToChat());
+              if (currentChatIndex < receiveChatIndex) {
+                chatList.getSelectionModel().select(currentChatIndex + 1);
+              } else {
+                chatList.getSelectionModel().select(currentChatIndex);
+              }
               Controller.this.chatList.setItems(items);
               Controller.this.chatList.refresh();
 //                            System.out.println(Controller.this.chatList.getItems());
@@ -1006,7 +1089,7 @@ public class Controller implements Initializable {
                         messageItems.stream().filter(e -> e.getBelongToChat().equals(currentChat))
                                 .collect(Collectors.toList()));
                 chatContentList.setItems(filterMessageItems);
-                chatContentList.getSelectionModel().selectLast();
+//                                chatContentList.getSelectionModel().selectLast();
               });
             }
           }
